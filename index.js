@@ -43,9 +43,30 @@ run().catch(console.dir);
 
 
 
+const totalTask = client.db('taskDB').collection('totalTask')
+
+
+
+app.post('/task', async(req, res) => {
+ 
+     const newTask = req.body
+     const result = await totalTask.insertOne(newTask)
+     res.send(result)
+ })
+
+
+
+ app.get('/task/:email', async(req, res) => {
+    const email = req.params.email
+    const query = {userEmail : email}
+    const data = await totalTask.find(query).toArray()
+    res.send(data)
+  })
+
+
 
 app.get('/', (req, res) => {
-    res.send('Biye Kormo server is running')
+    res.send('Job task server is running')
 })
 
 app.listen(port, () => {
