@@ -3,7 +3,7 @@ const cors = require('cors')
 const app = express()
 const port = process.env.PORT || 5000
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 
 // middleware is here
@@ -61,6 +61,35 @@ app.post('/task', async(req, res) => {
     const query = {userEmail : email}
     const data = await totalTask.find(query).toArray()
     res.send(data)
+  })
+
+
+
+  app.put('/ongoing/id', async(req, res) => {
+    const id = req.params.id
+    const query = {_id : new ObjectId(id)}
+    const options = {upsert: true}
+    const updateOngoing = {
+      $set: {
+        status: "ongoing"
+      }
+    }
+    const result = await totalTask.updateOne(query, updateOngoing, options)
+    res.send(result)
+  })
+
+
+  app.put('/completed/id', async(req, res) => {
+    const id = req.params.id
+    const query = {_id : new ObjectId(id)}
+    const options = {upsert: true}
+    const updateOngoing = {
+      $set: {
+        status: "completed"
+      }
+    }
+    const result = await totalTask.updateOne(query, updateOngoing, options)
+    res.send(result)
   })
 
 
