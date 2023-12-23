@@ -58,14 +58,28 @@ app.post('/task', async(req, res) => {
 
  app.get('/task/:email', async(req, res) => {
     const email = req.params.email
-    const query = {userEmail : email}
+    const query = {userEmail : email, status: 'new'}
+    const data = await totalTask.find(query).toArray()
+    res.send(data)
+  })
+
+ app.get('/ongoing/:email', async(req, res) => {
+    const email = req.params.email
+    const query = {userEmail : email, status: 'ongoing'}
+    const data = await totalTask.find(query).toArray()
+    res.send(data)
+  })
+
+ app.get('/completed/:email', async(req, res) => {
+    const email = req.params.email
+    const query = {userEmail : email, status: 'completed'}
     const data = await totalTask.find(query).toArray()
     res.send(data)
   })
 
 
 
-  app.put('/ongoing/id', async(req, res) => {
+  app.put('/ongoing/:id', async(req, res) => {
     const id = req.params.id
     const query = {_id : new ObjectId(id)}
     const options = {upsert: true}
@@ -79,7 +93,7 @@ app.post('/task', async(req, res) => {
   })
 
 
-  app.put('/completed/id', async(req, res) => {
+  app.put('/completed/:id', async(req, res) => {
     const id = req.params.id
     const query = {_id : new ObjectId(id)}
     const options = {upsert: true}
@@ -89,6 +103,17 @@ app.post('/task', async(req, res) => {
       }
     }
     const result = await totalTask.updateOne(query, updateOngoing, options)
+    res.send(result)
+  })
+
+
+
+
+  app.delete('/delete/:id', async(req, res) => {
+    const id = req.params.id
+    const query = {_id: new ObjectId(id)}
+  
+    const result = await totalTask.deleteOne(query)
     res.send(result)
   })
 
